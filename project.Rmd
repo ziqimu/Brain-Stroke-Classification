@@ -1,0 +1,234 @@
+---
+title: "project"
+output: pdf_document
+date: "2024-09-23"
+---
+
+```{r}
+mydata <- read.csv("brain_stroke.csv")
+summary(mydata)
+```
+
+```{r}
+totalsize <- nrow(mydata)
+
+gender_counts <- table(mydata$gender)
+stroke_counts <- table(mydata$stroke)
+stroke_gender_counts <- table(mydata$gender[mydata$stroke == 1])
+nostroke_gender_counts <- table(mydata$gender[mydata$stroke == 0])
+
+gender_percentage <- prop.table(gender_counts) * 100
+stroke_gender_proportion <- prop.table(stroke_gender_counts) * 100
+nostroke_gender_proportion <- prop.table(nostroke_gender_counts) * 100
+
+cat("total size is:", totalsize, "\n")
+cat("gender counts is: ", gender_counts, "percentage is: ", gender_percentage, "\n")
+stroke_counts
+stroke_gender_counts
+stroke_gender_proportion
+nostroke_gender_counts
+nostroke_gender_proportion
+
+cat("Hypertension", "\n")
+hypertension_counts <- table(mydata$hypertension)
+hypertension_percentage <- prop.table(hypertension_counts) * 100
+hypertension_counts
+hypertension_percentage
+
+hypertensionwithstroke <- table(mydata$hypertension[mydata$stroke == 1])
+hypertensionwithstroke
+prop.table(hypertensionwithstroke) * 100
+
+hypertensionwithoutstroke <- table(mydata$hypertension[mydata$stroke == 0])
+hypertensionwithoutstroke
+prop.table(hypertensionwithoutstroke) * 100
+cat("\n")
+
+cat("Heartdisease", "\n")
+heart_counts <- table(mydata$heart_disease)
+heart_counts
+prop.table(heart_counts) * 100
+
+heartwithstroke <- table(mydata$heart_disease[mydata$stroke == 1])
+heartwithstroke
+prop.table(heartwithstroke) * 100
+
+heartwithoutstroke <- table(mydata$heart_disease[mydata$stroke == 0])
+heartwithoutstroke
+prop.table(heartwithoutstroke) * 100
+cat("\n")
+
+cat("Marriage Status", "\n")
+marriage <- table(mydata$ever_married)
+marriage
+prop.table(marriage) * 100
+
+marriagewithstroke <- table(mydata$ever_married[mydata$stroke == 1])
+marriagewithstroke
+prop.table(marriagewithstroke) * 100
+
+marriagewithoutstroke <- table(mydata$ever_married[mydata$stroke == 0])
+marriagewithoutstroke
+prop.table(marriagewithoutstroke) * 100
+
+cat("Work Type", "\n")
+work <- table(mydata$work_type)
+work
+prop.table(work) * 100
+
+workwithstroke <- table(mydata$work_type[mydata$stroke == 1])
+workwithstroke
+prop.table(workwithstroke) * 100
+
+workwithoutstroke <- table(mydata$work_type[mydata$stroke == 0])
+workwithoutstroke
+prop.table(workwithoutstroke) * 100
+
+cat("Residence Type", "\n")
+resident <- table(mydata$Residence_type)
+resident
+prop.table(resident) * 100
+
+residentwithstroke <- table(mydata$Residence_type[mydata$stroke == 1])
+residentwithstroke
+prop.table(residentwithstroke) * 100
+
+residentwithoutstroke <- table(mydata$Residence_type[mydata$stroke == 0])
+residentwithoutstroke
+prop.table(residentwithoutstroke) * 100
+
+
+cat("Smoking Status", "\n")
+smoking <- table(mydata$smoking_status)
+smoking
+prop.table(smoking) * 100
+
+smokingwithstroke <- table(mydata$smoking_status[mydata$stroke == 1])
+smokingwithstroke
+prop.table(smokingwithstroke) * 100
+
+smokingwithoutstroke <- table(mydata$smoking_status[mydata$stroke == 0])
+smokingwithoutstroke
+prop.table(smokingwithoutstroke) * 100
+
+```
+
+```{r}
+sapply(mydata[, c("age", "avg_glucose_level", "bmi")], function(x) c(mean = mean(x, na.rm = TRUE), 
+                                                                      median = median(x, na.rm = TRUE), 
+                                                                      sd = sd(x, na.rm = TRUE), 
+                                                                    range = range(x, na.rm = TRUE))) 
+
+calc_stats <- function(data) {
+  c(Mean = mean(data, na.rm = TRUE),
+    Median = median(data, na.rm = TRUE),
+    SD = sd(data, na.rm = TRUE),
+    Range = range(data, na.rm = TRUE))
+}
+age_stats <- sapply(split(mydata$age, mydata$stroke), calc_stats)
+
+cat("Statistics for Age:\n")
+print(age_stats)
+
+glucose_stats <- sapply(split(mydata$avg_glucose_level, mydata$stroke), calc_stats)
+cat("Statistics for glucose level:\n")
+print(glucose_stats)
+
+bmi_stats <- sapply(split(mydata$bmi, mydata$stroke), calc_stats)
+cat("Statistics for bmi:\n")
+print(bmi_stats)
+
+
+```
+
+### Boxplots
+
+```{r}
+par(mfrow = c(1, 2))
+
+boxplot(age ~ stroke, data = mydata,
+        xlab = "Stroke Status",
+        ylab = "Age",
+        names = c("No Stroke", "Stroke"),
+        main = "Age vs Stroke Status")
+
+boxplot(avg_glucose_level ~ stroke, data = mydata,
+        xlab = "Stroke Status",
+        ylab = "Average Glucose Level",
+        names = c("No Stroke", "Stroke"),
+        main = "Avg Glucose Level vs Stroke Status")
+
+boxplot(bmi ~ stroke, data = mydata,
+        xlab = "Stroke Status",
+        ylab = "BMI",
+        names = c("No Stroke", "Stroke"),
+        main = "BMI vs Stroke Status")
+```
+
+### Stacked Barplots
+
+```{r}
+categorical_vars <- c("gender", "hypertension", "heart_disease", "ever_married", 
+                      "work_type", "Residence_type", "smoking_status")
+
+par(mfrow = c(1,2), mar = c(5, 3, 8, 8)) 
+for (var in categorical_vars) {
+  table_data <- table(mydata[[var]], mydata$stroke)
+  prop_data <- prop.table(table_data, margin = 2)
+  
+  barplot(prop_data, 
+          beside = FALSE,        
+          col = c("skyblue", "salmon", "lightgreen", "lightpink", "orange"), 
+          xlab = "Stroke Status", 
+          ylab = "Proportion", 
+          main = paste("Stroke Status for", var),
+          names.arg = c("No Stroke", "Stroke"),
+          cex.names = 0.8,
+          cex.main = 0.9)
+  
+  legend("topright", inset = c(-1, 0), 
+         legend = rownames(prop_data), 
+         fill = c("skyblue", "salmon", "lightgreen", "lightpink", "orange"), 
+         xpd = TRUE, bty = "n", cex = 0.8) 
+}
+
+
+```
+```{r}
+p_gender <- chisq.test(table(mydata$gender, mydata$stroke))$p.value
+p_gender
+
+p_hypertension <- chisq.test(table(mydata$hypertension, mydata$stroke))$p.value
+p_hypertension
+
+p_heart_disease <- chisq.test(table(mydata$heart_disease, mydata$stroke))$p.value
+p_heart_disease
+
+p_ever_married <- chisq.test(table(mydata$ever_married, mydata$stroke))$p.value
+p_ever_married
+
+p_work_type <- chisq.test(table(mydata$work_type, mydata$stroke))$p.value
+p_work_type
+
+p_Residence_type <- chisq.test(table(mydata$Residence_type, mydata$stroke))$p.value
+p_Residence_type
+
+p_smoking_status <- chisq.test(table(mydata$smoking_status, mydata$stroke))$p.value
+p_smoking_status
+
+
+
+```
+```{r}
+t_age <- t.test(age ~ stroke, data = mydata)
+cat("T-test for Age and Stroke:\n")
+t_age$p.value
+
+t_glucose <- t.test(avg_glucose_level ~ stroke, data = mydata)
+cat("T-test for Avg Glucose Level and Stroke:\n")
+t_glucose$p.value
+
+t_bmi <- t.test(bmi ~ stroke, data = mydata)
+cat("T-test for BMI and Stroke:\n")
+t_bmi$p.value
+```
