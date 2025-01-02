@@ -53,7 +53,7 @@ I fit the logistic regression models by using forward selection, backward elimin
 
 The confusion matrix gets an accuracy of 0.75.
 
-### Assumption Checking
+### Assumption Checking:
 
 #### Assumption 1: Multicollinearity checking
 
@@ -69,6 +69,7 @@ The confusion matrix gets an accuracy of 0.75.
 | avg glucose level | 1.117    | 1      | 1.057                              |
 | bmi               | 1.116    | 1      | 1.056                              |
 | smoking status    | 1.114    | 3      | 1.018                              |
+
 Variance Inflation Factor (VIF) is used to detect multicollinearity among independent variables. A VIF
 value below 2 indicates a low correlation. From the above table, since all variables from our dataset have VIF
 values below the stricter threshold of 2, the multicollinearity is negligible for this dataset.
@@ -80,9 +81,22 @@ values below the stricter threshold of 2, the multicollinearity is negligible fo
 | age_log                  | -0.074230     | 0.039161       | -1.895      | 0.05803     |
 | avg glucose level_log    | 0.001876      | 0.007516       | 0.250       | 0.80286     |
 | bmi_log                  | -0.036375     | 0.094335       | -0.386      | 0.69980     |
+
 Using the Box-Tidwell test, we can see that the log-transformed interaction terms are not significant for
 age, average glucose level, and BMI, suggesting the linearity assumption holds.
 
+#### Assumption 3: Independence checking
+
+Positive autocorrelation detected since the Durbin-Watson statistic is 0.18026, which is close to 0. Also it
+has a p value smaller than 2.2e-16. Thus the Durbin-Watson test violates the assumption that variables
+are independent.
+
+#### Assumption 4: Outliers and influential points checking
+
+
+
+Since no observations with Cook’s Distance > 0.5 are found, no observations have a significant impact
+on the model results. Thus, the outlier check is satisfied.
 
 ## Tools
 <div>
