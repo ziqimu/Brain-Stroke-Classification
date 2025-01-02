@@ -7,11 +7,11 @@ A stroke is a serious medical condition caused by poor blood flow to the brain, 
 ## Getting the Dataset
 Access data from Kaggle: 
 
-[Star Dataset on Kaggle](https://www.kaggle.com/datasets/jillanisofttech/brain-stroke-dataset/data)
+[Brain Stroke Dataset on Kaggle](https://www.kaggle.com/datasets/jillanisofttech/brain-stroke-dataset/data)
 
 
 ## Data Description
-We utilize a dataset focused on stroke prediction and risk factors. Strokes, a leading cause of morbidity,
+I utilize a dataset focused on stroke prediction and risk factors. Strokes, a leading cause of morbidity,
 are classified into ischemic and hemorrhagic types, each with distinct causes and outcomes. The dataset
 we use includes demographic, lifestyle, and medical variables such as age, gender, hypertension, heart
 disease, BMI, average glucose level, and smoking status. By analyzing these factors, we aim to explore
@@ -52,6 +52,37 @@ I fit the logistic regression models by using forward selection, backward elimin
 | **Avg_glucose_level**| 0.004111   | 0.001168 | 0.000431 |
 
 The confusion matrix gets an accuracy of 0.75.
+
+### Assumption Checking
+
+#### Assumption 1: Multicollinearity checking
+
+| **Variable**       | **GVIF** | **Df** | **Adjusted VIF (GVIF^(1/(2*Df)))** |
+|--------------------|----------|--------|------------------------------------|
+| gender            | 1.046    | 1      | 1.023                              |
+| age               | 1.452    | 1      | 1.205                              |
+| hypertension      | 1.065    | 1      | 1.032                              |
+| heart disease     | 1.091    | 1      | 1.044                              |
+| ever married      | 1.109    | 1      | 1.053                              |
+| work type         | 1.428    | 3      | 1.061                              |
+| Residence type    | 1.009    | 1      | 1.005                              |
+| avg glucose level | 1.117    | 1      | 1.057                              |
+| bmi               | 1.116    | 1      | 1.056                              |
+| smoking status    | 1.114    | 3      | 1.018                              |
+Variance Inflation Factor (VIF) is used to detect multicollinearity among independent variables. A VIF
+value below 2 indicates a low correlation. From the above table, since all variables from our dataset have VIF
+values below the stricter threshold of 2, the multicollinearity is negligible for this dataset.
+
+#### Assumption 2: Linearity checking
+
+| **Variable**              | **Estimate**  | **Std. Error** | **z value** | **p value** |
+|---------------------------|---------------|----------------|-------------|-------------|
+| age_log                  | -0.074230     | 0.039161       | -1.895      | 0.05803     |
+| avg glucose level_log    | 0.001876      | 0.007516       | 0.250       | 0.80286     |
+| bmi_log                  | -0.036375     | 0.094335       | -0.386      | 0.69980     |
+Using the Box-Tidwell test, we can see that the log-transformed interaction terms are not significant for
+age, average glucose level, and BMI, suggesting the linearity assumption holds.
+
 
 ## Tools
 <div>
