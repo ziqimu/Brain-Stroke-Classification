@@ -13,8 +13,8 @@ Access data from Kaggle:
 ## Data Description
 I utilize a dataset focused on stroke prediction and risk factors. Strokes, a leading cause of morbidity,
 are classified into ischemic and hemorrhagic types, each with distinct causes and outcomes. The dataset
-we use includes demographic, lifestyle, and medical variables such as age, gender, hypertension, heart
-disease, BMI, average glucose level, and smoking status. By analyzing these factors, we aim to explore
+I use includes demographic, lifestyle, and medical variables such as age, gender, hypertension, heart
+disease, BMI, average glucose level, and smoking status. By analyzing these factors, I aim to explore
 patterns and build predictive models for stroke occurrence, thus helping us to understand stroke risk
 factors better.
 
@@ -82,7 +82,7 @@ values below the stricter threshold of 2, the multicollinearity is negligible fo
 | avg glucose level_log    | 0.001876      | 0.007516       | 0.250       | 0.80286     |
 | bmi_log                  | -0.036375     | 0.094335       | -0.386      | 0.69980     |
 
-Using the Box-Tidwell test, we can see that the log-transformed interaction terms are not significant for
+Using the Box-Tidwell test, we can observe that the log-transformed interaction terms are not significant for
 age, average glucose level, and BMI, suggesting the linearity assumption holds.
 
 #### Assumption 3: Independence checking
